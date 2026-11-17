@@ -540,29 +540,27 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .adm-prev.movable:focus-visible { outline: 2px solid var(--red) }
 .adm-hint { margin: 0; font: 400 12px/1.4 var(--sans); color: var(--muted) }
 /* Upcycled: problem, solution, call to action */
-.up-block { padding-block: 88px; border-bottom: 1px solid var(--line) }
-.up-h { margin: 0; font-family: var(--title); text-transform: uppercase; font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1; letter-spacing: .01em; color: var(--accent); display: flex; flex-wrap: wrap; gap: 0 .18em }
+.up-block { padding-block: 72px }
+.up-block .wrap { display: grid; justify-items: center; text-align: center }
+.up-problem { padding-top: 88px }
+.up-cta { padding-bottom: 40px }
+.up-h { margin: 0; font-family: var(--title); text-transform: uppercase; font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1; letter-spacing: .01em; color: var(--accent); display: flex; flex-wrap: wrap; justify-content: center; gap: 0 .18em }
 .up-h span { font-weight: 300 }
 .up-h b { font-weight: 700 }
-.up-text { margin: 22px 0 0; font: 300 clamp(1.25rem, 2.2vw, 1.6rem)/1.45 var(--serif); color: var(--soft); max-width: 34ch }
+.up-text { margin: 20px 0 0; font: 300 clamp(1.2rem, 2vw, 1.45rem)/1.5 var(--serif); color: var(--soft); max-width: 40ch }
 .up-text b { font-weight: 500; color: var(--ink) }
-.up-problem .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 48px; align-items: center }
-.up-sails { width: 100%; height: auto; color: var(--muted); opacity: .45 }
-@media (max-width: 800px) { .up-problem .wrap { grid-template-columns: 1fr } .up-sails { display: none } }
-.up-solution { background: var(--bg-2) }
-.up-solution .wrap, .up-cta .wrap { display: grid; justify-items: center; text-align: center }
-.up-solution .up-h, .up-cta .up-h { justify-content: center }
-.up-steps { list-style: none; margin: 56px 0 0; padding: 0; display: flex; align-items: flex-start; justify-content: center; gap: 28px; flex-wrap: wrap }
-.up-step { display: grid; justify-items: center; gap: 18px; width: 128px }
-.up-ic { width: 76px; height: 76px; color: var(--accent); display: grid; place-items: center }
+.up-copy { display: contents }
+.up-steps { list-style: none; margin: 48px 0 0; padding: 0; display: flex; align-items: flex-start; justify-content: center; gap: 24px; flex-wrap: wrap }
+.up-step { display: grid; justify-items: center; gap: 16px; width: 120px }
+.up-ic { width: 64px; height: 64px; color: var(--accent); display: grid; place-items: center }
 .up-ic svg { width: 100%; height: 100% }
-.up-lab { font: 300 1.25rem/1 var(--serif); color: var(--muted) }
-.up-lab b { font-weight: 700; color: var(--ink) }
-.up-arrow { width: 40px; color: var(--soft); padding-top: 32px }
-.up-arrow svg { width: 40px; height: 12px; display: block }
-@media (max-width: 700px) { .up-steps { gap: 18px 8px } .up-step { width: 120px } .up-arrow { display: none } }
-.up-cta .up-text { max-width: 40ch }
-[data-page="upcycled"] .back-row { justify-content: center }
+.up-lab { font: 300 1.15rem/1 var(--serif); color: var(--muted) }
+.up-lab b { font-weight: 600; color: var(--ink) }
+.up-arrow { width: 36px; color: var(--muted); padding-top: 26px }
+.up-arrow svg { width: 36px; height: 12px; display: block }
+@media (max-width: 700px) { .up-block { padding-block: 56px } .up-steps { gap: 28px 8px } .up-step { width: 120px } .up-arrow { display: none } }
+[data-page="upcycled"] .pagehead { border-bottom: 0 }
+[data-page="upcycled"] .back-row { justify-content: center; padding-block: 24px 88px }
 </style>
 </head>
 <body>
@@ -838,13 +836,6 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
         <h2 class="up-h"><span>The</span><b>problem</b></h2>
         <p class="up-text"><b>Old sails</b> are made of <b>strong &amp; durable materials</b> but are <b>often discarded</b>.</p>
       </div>
-      <svg class="up-sails" viewBox="0 0 420 300" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2">
-          <line x1="70" y1="10" x2="70" y2="290"/><path d="M74 16 Q150 110 168 280 L74 280 Z"/><path d="M66 40 L10 280 L66 280"/>
-          <g stroke-opacity=".6"><line x1="74" y1="80" x2="128" y2="78"/><line x1="74" y1="140" x2="150" y2="136"/><line x1="74" y1="200" x2="162" y2="196"/></g>
-          <line x1="250" y1="30" x2="250" y2="290"/><path d="M254 36 Q320 120 330 280 L254 280 Z"/>
-          <path d="M300 30 Q420 60 410 280 L330 280" stroke-opacity=".7"/>
-          <g stroke-opacity=".5"><line x1="254" y1="110" x2="296" y2="108"/><line x1="254" y1="190" x2="320" y2="186"/></g>
-        </svg>
     </div>
   </div>
 
