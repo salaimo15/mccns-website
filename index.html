@@ -545,6 +545,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .up-logo { margin: 0 0 6px; line-height: 0 }
 .up-logo img { height: clamp(220px, 34vh, 320px); width: auto; display: block }
 .up-hero .eyebrow { margin: 0 }
+.br-hero .up-logo img { height: auto; width: clamp(260px, 36vw, 420px) }
 .up-hero .lede { margin: 0; max-width: 46ch }
 .up-block { padding-block: 72px }
 .up-block .wrap { display: grid; justify-items: center; text-align: center }
@@ -874,21 +875,17 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 
 <!-- CREW UNIFORMS (BR1) -->
 <section class="page" data-page="uniforms" style="--accent: var(--sand)" hidden>
-  <div class="pagehead">
+  <div class="up-hero br-hero">
     <div class="wrap">
-      <div>
-        <div class="eyebrow">Crew uniforms</div>
-        <h1 class="h-xl">BR1</h1>
-        <p class="lede">Uniforms and equipment for yacht crews, made by an independent manufacturer.</p>
-      </div>
-      <div class="panel bare"><img src="img/logo-br1.webp" alt="BR1 logo"></div>
+      <h1 class="up-logo"><img src="img/logo-br1.webp" alt="BR1 Crew Uniforms"></h1>
+      <p class="lede">Uniforms and equipment for yacht crews, made by an independent manufacturer.</p>
     </div>
   </div>
 
   <div class="up-block br-cat">
     <div class="wrap">
       <h2 class="up-h"><span>Our</span><b>catalog</b></h2>
-      <p class="up-text">Uniforms and equipment for yacht crews, finished with the yacht's name or logo.</p>
+      <p class="up-text">Every piece finished with the <b>yacht's name or logo</b>.</p>
       <button type="button" class="admin-btn cat-edit" id="cat-edit" hidden>Edit catalog</button>
       <ul class="cats" id="cat-list">
         <li class="cat"><svg class="cat-ic" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M22 8 L14 11 L4 20 L10 30 L16 26 L16 58 L48 58 L48 26 L54 30 L60 20 L50 11 L42 8 Q40 14 32 14 Q24 14 22 8 Z"/><path d="M27 9 L32 19 L37 9"/></svg><b>Polo shirts</b><span>Breathable piqué and technical polos for deck and interior crew.</span></li>
