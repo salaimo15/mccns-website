@@ -5,7 +5,7 @@
 -- Who may edit: the admin account(s) listed here.
 create or replace function public.is_admin()
 returns boolean language sql stable as $$
-  select coalesce(auth.jwt() ->> 'email', '') in ('salaimo@maltasailfactory.com')
+  select lower(coalesce(auth.jwt() ->> 'email', '')) in ('stefano.alaimo@outlook.com')
 $$;
 
 -- Yachts (current fleet and previously managed)
