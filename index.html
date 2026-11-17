@@ -607,7 +607,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .qreqs-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap }
 .qreqs-head h3 { margin: 0; font: 600 13px/1.3 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent) }
 .qreqs-head .br-note { margin: 0 }
-#q-list { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 12px }
+#q-list, .qlist { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 12px }
 .qreq { background: var(--bg-2); border: 1px solid var(--line); border-left: 3px solid var(--accent); padding: 18px 20px; display: grid; gap: 6px }
 .qreq.done { border-left-color: var(--line); opacity: .7 }
 .qreq-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px }
@@ -629,6 +629,28 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .support-btn:hover { background: var(--red) }
 @media (max-width: 760px) { .up-support .wrap { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 32px } .sup-img { max-width: 320px } .sup-copy { justify-items: center } .sup-h { align-items: center } }
 @media (prefers-reduced-motion: reduce) { .sup-img img { transition: none } }
+/* T-shirt order */
+.tee-card { width: min(560px, 100%) }
+.tee-step { display: grid; gap: 10px }
+.sizes { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px }
+.sz { display: grid; gap: 6px; justify-items: center; border: 1px solid var(--line); padding: 10px 4px }
+.sz-l { font: 700 13px/1 var(--sans); letter-spacing: .1em; color: var(--ink) }
+.sz-q { display: flex; align-items: center; gap: 2px }
+.sz-q input { width: 34px; background: transparent; border: 0; color: var(--ink); font: 500 16px/1 var(--sans); text-align: center; -moz-appearance: textfield; appearance: textfield }
+.sz-q input::-webkit-outer-spin-button, .sz-q input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0 }
+.sz-b { width: 26px; height: 26px; background: none; border: 1px solid var(--line); color: var(--soft); font: 400 15px/1 var(--sans); cursor: pointer; padding: 0 }
+.sz-b:hover { border-color: var(--ink); color: var(--ink) }
+.sz.on { border-color: var(--accent, var(--red)) }
+#tee-modal { --accent: var(--rust) }
+.tee-card .adm-fields textarea { background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: 400 15px/1.4 var(--serif); padding: 10px 12px; letter-spacing: 0; text-transform: none; resize: vertical }
+.tee-card .adm-actions .br-note { margin: 0 }
+.tee-card .qdone { margin: 0; max-width: none }
+@media (max-width: 480px) { .sizes { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+.adm-card { grid-template-columns: minmax(0, 1fr) }
+.adm-card > * { min-width: 0 }
+.adm-fields > label { min-width: 0 }
+.adm-fields input, .adm-fields textarea, .adm-select { width: 100%; min-width: 0 }
+.tee-card .adm-actions > span.br-note { display: block; margin-right: auto }
 </style>
 </head>
 <body>
@@ -966,7 +988,13 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
         <div class="eyebrow">Support us</div>
         <h2 class="up-h sup-h"><span>Wind as fuel.</span><b>Ocean as home.</b></h2>
         <p class="up-text">Wear the message. Our t-shirt carries the line that sums up why we keep sailcloth out of the bin.</p>
-        <a class="btn support-btn" href="https://www.instagram.com/p/DfAcDWUCrpr/?img_index=1" target="_blank" rel="noopener">Get the t-shirt <span class="arrow">→</span></a>
+        <button type="button" class="btn support-btn" id="tee-open">Get the t-shirt <span class="arrow">→</span></button>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="qreqs tee-orders" id="tee-orders" hidden>
+        <div class="qreqs-head"><h3>T-shirt orders</h3><span class="br-note" id="tee-count"></span></div>
+        <ul class="qlist" id="tee-list"></ul>
       </div>
     </div>
   </div>
@@ -1054,6 +1082,43 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     </div>
     <p class="adm-err" id="login-err" hidden></p>
     <div class="adm-actions"><button type="submit" class="btn" id="login-go">Sign in</button></div>
+  </form>
+</div>
+
+<div class="adm-modal" id="tee-modal" hidden>
+  <form class="adm-card tee-card" id="tee-form" novalidate>
+    <div class="adm-head"><b>Wind as fuel. Ocean as home.</b><button type="button" class="adm-x" id="tee-close" aria-label="Close">×</button></div>
+    <input class="hp" id="tee-company" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <div class="tee-step">
+      <span class="adm-gl">Sizes and quantities</span>
+      <div class="sizes">
+          <div class="sz"><span class="sz-l">S</span><div class="sz-q"><button type="button" class="sz-b" data-d="-1" aria-label="One less S">−</button><input id="tee-S" type="number" min="0" max="20" value="0" inputmode="numeric" aria-label="Quantity in size S"><button type="button" class="sz-b" data-d="1" aria-label="One more S">+</button></div></div>
+          <div class="sz"><span class="sz-l">M</span><div class="sz-q"><button type="button" class="sz-b" data-d="-1" aria-label="One less M">−</button><input id="tee-M" type="number" min="0" max="20" value="0" inputmode="numeric" aria-label="Quantity in size M"><button type="button" class="sz-b" data-d="1" aria-label="One more M">+</button></div></div>
+          <div class="sz"><span class="sz-l">L</span><div class="sz-q"><button type="button" class="sz-b" data-d="-1" aria-label="One less L">−</button><input id="tee-L" type="number" min="0" max="20" value="0" inputmode="numeric" aria-label="Quantity in size L"><button type="button" class="sz-b" data-d="1" aria-label="One more L">+</button></div></div>
+          <div class="sz"><span class="sz-l">XL</span><div class="sz-q"><button type="button" class="sz-b" data-d="-1" aria-label="One less XL">−</button><input id="tee-XL" type="number" min="0" max="20" value="0" inputmode="numeric" aria-label="Quantity in size XL"><button type="button" class="sz-b" data-d="1" aria-label="One more XL">+</button></div></div>
+          <div class="sz"><span class="sz-l">XXL</span><div class="sz-q"><button type="button" class="sz-b" data-d="-1" aria-label="One less XXL">−</button><input id="tee-XXL" type="number" min="0" max="20" value="0" inputmode="numeric" aria-label="Quantity in size XXL"><button type="button" class="sz-b" data-d="1" aria-label="One more XXL">+</button></div></div>
+      </div>
+      <span class="br-note" id="tee-total">0 t-shirts</span>
+    </div>
+    <div class="adm-fields">
+      <label class="wide">Your name<input id="tee-name" autocomplete="name" required></label>
+      <label>Email<input id="tee-email" type="email" autocomplete="email" required></label>
+      <label>Phone<input id="tee-phone" type="tel" autocomplete="tel"></label>
+    </div>
+    <div class="adm-group">
+      <span class="adm-gl">Delivery</span>
+      <div class="seg" role="radiogroup" aria-label="Delivery">
+        <label><input type="radio" name="tee-del" id="tee-pickup" value="pickup" checked><span>Pick up in Birkirkara</span></label>
+        <label><input type="radio" name="tee-del" id="tee-ship" value="ship"><span>Ship to me</span></label>
+      </div>
+    </div>
+    <div class="adm-fields" id="tee-addr-wrap" hidden>
+      <label class="wide">Shipping address<textarea id="tee-addr" rows="3" autocomplete="street-address"></textarea></label>
+    </div>
+    <div class="adm-fields"><label class="wide">Notes<textarea id="tee-notes" rows="2" placeholder="Anything we should know"></textarea></label></div>
+    <p class="adm-err" id="tee-err" hidden></p>
+    <div class="adm-actions"><span class="br-note">We confirm price, payment and delivery by email.</span><button type="submit" class="btn" id="tee-send">Send order</button></div>
+    <div class="qdone" id="tee-done" hidden><b>Thank you.</b><span>Your order has reached us. We will email you to confirm payment and delivery.</span></div>
   </form>
 </div>
 </main>
@@ -1470,6 +1535,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       if (!on) Object.keys(EDIT_BTN).forEach(function (k) { editing[k] = false; var b = document.getElementById(EDIT_BTN[k]); b.setAttribute('aria-pressed', 'false'); b.textContent = EDIT_LABEL[k]; });
       render('fleet'); render('crew'); render('catalog');
       if (window.__mccnsRequests) window.__mccnsRequests(on);
+      if (window.__mccnsOrders) window.__mccnsOrders(on);
     }
     /* admin sign in */
     var lm = document.getElementById('login-modal'), lf = document.getElementById('login-form'), lerr = document.getElementById('login-err');
@@ -1560,6 +1626,76 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     }
     window.__mccnsReloadRequests = function () { if (!box.hidden) loadReqs(); };
     window.__mccnsRequests = function (on) { box.hidden = !on; if (on) loadReqs(); else list.textContent = ''; };
+  })();
+
+  /* Ocean as Home t-shirt order */
+  (function () {
+    var modal = document.getElementById('tee-modal'), form = document.getElementById('tee-form'); if (!modal) return;
+    var SIZES = ['S', 'M', 'L', 'XL', 'XXL'], err = document.getElementById('tee-err'), done = document.getElementById('tee-done'), send = document.getElementById('tee-send');
+    function qty(s) { var n = parseInt(document.getElementById('tee-' + s).value, 10); return isNaN(n) ? 0 : Math.max(0, Math.min(20, n)); }
+    function total() { var n = 0; SIZES.forEach(function (s) { var q = qty(s); n += q; document.getElementById('tee-' + s).closest('.sz').classList.toggle('on', q > 0); }); document.getElementById('tee-total').textContent = n + (n === 1 ? ' t-shirt' : ' t-shirts'); return n; }
+    form.querySelectorAll('.sz-b').forEach(function (b) { b.addEventListener('click', function () { var inp = b.parentNode.querySelector('input'); inp.value = Math.max(0, Math.min(20, (parseInt(inp.value, 10) || 0) + Number(b.dataset.d))); total(); }); });
+    SIZES.forEach(function (s) { document.getElementById('tee-' + s).addEventListener('input', total); });
+    function delivery() { var ship = document.getElementById('tee-ship').checked; document.getElementById('tee-addr-wrap').hidden = !ship; return ship ? 'ship' : 'pickup'; }
+    ['tee-pickup', 'tee-ship'].forEach(function (id) { document.getElementById(id).addEventListener('change', delivery); });
+    function open() { err.hidden = true; done.hidden = true; Array.prototype.forEach.call(form.children, function (c) { if (c !== done && !c.classList.contains('adm-head') && !c.classList.contains('hp') && c.id !== 'tee-addr-wrap') c.hidden = false; }); delivery(); total(); modal.hidden = false; }
+    function close() { modal.hidden = true; }
+    document.getElementById('tee-open').addEventListener('click', open);
+    document.getElementById('tee-close').addEventListener('click', close);
+    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
+    function v(id) { return document.getElementById(id).value.trim(); }
+    function mailto(o) {
+      var lines = ['Order: Ocean as Home t-shirt', 'Sizes: ' + SIZES.filter(function (s) { return o.sizes[s]; }).map(function (s) { return o.sizes[s] + ' x ' + s; }).join(', '), 'Name: ' + o.name, 'Email: ' + o.email, 'Phone: ' + (o.phone || ''), 'Delivery: ' + (o.delivery === 'ship' ? 'Ship to: ' + (o.address || '') : 'Pick up in Birkirkara'), '', o.notes || ''];
+      return 'mailto:info@br1yacht.com?subject=' + encodeURIComponent('T-shirt order: ' + o.name) + '&body=' + encodeURIComponent(lines.join('\n'));
+    }
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault(); err.hidden = true;
+      if (v('tee-company')) return;
+      var n = total(), sizes = {}; SIZES.forEach(function (s) { if (qty(s)) sizes[s] = qty(s); });
+      var o = { name: v('tee-name').slice(0, 120), email: v('tee-email').slice(0, 200), phone: v('tee-phone').slice(0, 60) || null, sizes: sizes, total: n, delivery: delivery(), address: v('tee-addr').slice(0, 500) || null, notes: v('tee-notes').slice(0, 1000) || null };
+      if (!n) { err.textContent = 'Choose at least one size.'; err.hidden = false; return; }
+      if (!o.name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(o.email)) { err.textContent = 'Add your name and a valid email address.'; err.hidden = false; return; }
+      if (o.delivery === 'ship' && !o.address) { err.textContent = 'Add a shipping address, or choose pick up.'; err.hidden = false; return; }
+      var sb = window.__mccnsSb;
+      if (!sb) { window.location.href = mailto(o); return; }
+      send.disabled = true;
+      var res = await sb.from('tshirt_orders').insert(o);
+      send.disabled = false;
+      if (res.error) { err.textContent = 'We could not send your order just now. '; var a = document.createElement('a'); a.href = mailto(o); a.textContent = 'Send it by email instead'; err.appendChild(a); err.hidden = false; return; }
+      form.reset(); total();
+      Array.prototype.forEach.call(form.children, function (c) { if (!c.classList.contains('adm-head')) c.hidden = true; }); done.hidden = false;
+      if (window.__mccnsReloadOrders) window.__mccnsReloadOrders();
+    });
+
+    /* admin: list of orders */
+    var box = document.getElementById('tee-orders'), list = document.getElementById('tee-list'), count = document.getElementById('tee-count');
+    function fmt(d) { try { return new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return d; } }
+    function row(label, value, href) { if (!value) return null; var p = document.createElement('div'), b = document.createElement('b'); b.textContent = label; p.appendChild(b); var s = document.createElement(href ? 'a' : 'span'); s.textContent = value; if (href) s.href = href; p.appendChild(s); return p; }
+    async function loadOrders() {
+      var sb = window.__mccnsSb; if (!sb) return;
+      var res = await sb.from('tshirt_orders').select('*').order('created_at', { ascending: false });
+      list.textContent = '';
+      if (res.error) { count.textContent = 'Could not load orders (' + res.error.message + ')'; return; }
+      var pieces = 0, open = 0; res.data.forEach(function (o) { if (o.status !== 'done') { open++; pieces += o.total || 0; } });
+      count.textContent = res.data.length ? res.data.length + ' in total, ' + open + ' open (' + pieces + ' t-shirts)' : 'No orders yet';
+      res.data.forEach(function (o) {
+        var li = document.createElement('li'); li.className = 'qreq' + (o.status === 'done' ? ' done' : '');
+        var head = document.createElement('div'); head.className = 'qreq-head';
+        var nm = document.createElement('b'); nm.textContent = o.name + ' · ' + (o.total || 0) + (o.total === 1 ? ' t-shirt' : ' t-shirts'); head.appendChild(nm);
+        var dt = document.createElement('span'); dt.textContent = fmt(o.created_at); head.appendChild(dt); li.appendChild(head);
+        var sz = SIZES.filter(function (s) { return o.sizes && o.sizes[s]; }).map(function (s) { return o.sizes[s] + ' × ' + s; }).join(', ');
+        [row('Sizes', sz), row('Email', o.email, 'mailto:' + o.email), row('Phone', o.phone, o.phone ? 'tel:' + o.phone.replace(/\s+/g, '') : null), row('Delivery', o.delivery === 'ship' ? 'Ship to: ' + (o.address || '') : 'Pick up in Birkirkara'), row('Notes', o.notes)].forEach(function (x) { if (x) li.appendChild(x); });
+        var act = document.createElement('div'); act.className = 'qreq-act';
+        var mark = document.createElement('button'); mark.type = 'button'; mark.className = 'admin-btn'; mark.textContent = o.status === 'done' ? 'Mark as open' : 'Mark as done';
+        mark.addEventListener('click', async function () { var r = await window.__mccnsSb.from('tshirt_orders').update({ status: o.status === 'done' ? 'new' : 'done' }).eq('id', o.id); if (!r.error) loadOrders(); });
+        var del = document.createElement('button'); del.type = 'button'; del.className = 'adm-del'; del.textContent = 'Delete';
+        del.addEventListener('click', async function () { if (!del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = 'Click again to delete'; return; } var r = await window.__mccnsSb.from('tshirt_orders').delete().eq('id', o.id); if (!r.error) loadOrders(); });
+        act.appendChild(mark); act.appendChild(del); li.appendChild(act); list.appendChild(li);
+      });
+    }
+    window.__mccnsReloadOrders = function () { if (!box.hidden) loadOrders(); };
+    window.__mccnsOrders = function (on) { box.hidden = !on; if (on) loadOrders(); else list.textContent = ''; };
   })();
 
   show(location.hash.slice(1), false);
