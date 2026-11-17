@@ -546,6 +546,9 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .up-logo img { height: clamp(220px, 34vh, 320px); width: auto; display: block }
 .up-hero .eyebrow { margin: 0 }
 .br-hero .up-logo img { height: auto; width: clamp(260px, 36vw, 420px) }
+.msf-hero .up-logo img { height: auto; width: clamp(200px, 22vw, 260px) }
+.msf-hero { padding-bottom: 56px; border-bottom: 1px solid var(--line) }
+.up-hero .site-link { margin: 0 }
 .up-hero .lede { margin: 0; max-width: 46ch }
 .up-block { padding-block: 72px }
 .up-block .wrap { display: grid; justify-items: center; text-align: center }
@@ -728,15 +731,12 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 
 <!-- SAILS -->
 <section class="page" data-page="sails" style="--accent: var(--red)" hidden>
-  <div class="pagehead">
+  <div class="up-hero msf-hero">
     <div class="wrap">
-      <div>
-        <div class="eyebrow">Sailmaking</div>
-        <h1 class="h-xl">Malta Sail Factory</h1>
-        <p class="lede">New sails for cruising and racing yachts, designed around the boat and the way it is sailed.</p>
-        <a class="site-link" href="https://www.maltasailfactory.com" target="_blank" rel="noopener">Visit maltasailfactory.com <span class="arrow">→</span></a>
-      </div>
-      <div class="panel bare"><img src="img/logo-msf.webp" alt="Malta Sail Factory logo"></div>
+      <h1 class="up-logo"><img src="img/logo-msf.webp" alt="Malta Sail Factory"></h1>
+      <div class="eyebrow">Sailmaking</div>
+      <p class="lede">New sails for cruising and racing yachts, designed around the boat and the way it is sailed.</p>
+      <a class="site-link" href="https://www.maltasailfactory.com" target="_blank" rel="noopener">Visit maltasailfactory.com <span class="arrow">→</span></a>
     </div>
   </div>
 
