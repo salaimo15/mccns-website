@@ -1107,7 +1107,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     }
     var flTrack = document.getElementById('fl-track'), crList = document.getElementById('cr-list');
     function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-    function toast(msg) { var t = document.getElementById('adm-toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { t.hidden = true; }, 3200); }
+    function toast(msg) { var t = document.getElementById('adm-toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { t.hidden = true; }, msg.length > 60 ? 9000 : 3200); }
     function initials(s) { return (s || '').trim().split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join('') || '·'; }
     function safeUrl(u) { if (typeof u !== 'string') return ''; u = u.trim(); if (!u) return ''; if (!/^https?:\/\//i.test(u)) u = 'https://' + u; try { var x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : ''; } catch (e) { return ''; } }
     function isPast(d) { return d.status === 'past'; }
@@ -1256,13 +1256,13 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
         if (res.error) throw res.error;
         if (!res.data || !res.data.length) throw { code: '42501' };
         close(); toast('Saved'); await load(kind);
-      } catch (x) { save.disabled = false; err.textContent = x && (x.code === '42501' || x.statusCode === '403' || /row-level security/i.test(x.message || '')) ? 'This account cannot edit the site. Sign in as the admin.' : 'Could not save. Check your connection and try again.'; err.hidden = false; }
+      } catch (x) { save.disabled = false; err.textContent = x && (x.code === '42501' || x.statusCode === '403' || /row-level security/i.test(x.message || '')) ? 'This account cannot edit the site. Sign in as the admin.' : 'Could not save. Check your connection and try again.'; if (x && x.message) err.textContent += ' (' + x.message + ')'; err.hidden = false; }
     });
     del.addEventListener('click', async function () {
       if (!cur || !cur.id) return;
       if (!del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = 'Click again to delete'; return; }
       try { var kind = cur.kind, res = await sb.from(kind).delete().eq('id', cur.id); if (res.error) throw res.error; close(); toast('Deleted'); await load(kind); }
-      catch (x) { err.textContent = 'Could not delete. Try again.'; err.hidden = false; }
+      catch (x) { err.textContent = 'Could not delete. Try again.' + (x && x.message ? ' (' + x.message + ')' : ''); err.hidden = false; }
     });
 
     [['fleet', 'fl-edit'], ['crew', 'cr-edit']].forEach(function (p) {
@@ -1299,14 +1299,19 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       var res = await sb.auth.signInWithPassword({ email: document.getElementById('login-email').value.trim(), password: document.getElementById('login-pass').value });
       btn.disabled = false;
       if (res.error) { lerr.textContent = 'Wrong email or password.'; lerr.hidden = false; return; }
-      document.getElementById('login-pass').value = ''; lm.hidden = true; setAdmin(true); toast('Signed in. Use Edit fleet or Edit crew.');
+      document.getElementById('login-pass').value = ''; lm.hidden = true; setAdmin(true);
+      var who = res.data && res.data.user && res.data.user.email;
+      toast(window.__mccnsLoadError ? 'Signed in as ' + who + ', but the database answered: ' + (window.__mccnsLoadError.message || 'not reachable') : 'Signed in as ' + who + '. Open Yacht & Crew Management and use Edit fleet or Edit crew.');
     });
     (async function start() {
       render('fleet'); render('crew');
       if (!CFG.supabaseUrl || !CFG.supabaseAnonKey || !window.supabase) return;
       sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
-      try { await Promise.all([load('fleet'), load('crew')]); } catch (e) { /* database asleep or unreachable: keep the coming soon notes */ }
+      var loadErr = null;
+      try { await Promise.all([load('fleet'), load('crew')]); } catch (e) { loadErr = e; /* database asleep or unreachable: keep the coming soon notes */ }
+      window.__mccnsLoadError = loadErr;
       var s = await sb.auth.getSession(); if (s && s.data && s.data.session) setAdmin(true);
+      if (loadErr && isOwner) toast('Database problem: ' + (loadErr.message || 'not reachable'));
       if (location.hash === '#admin') openLogin();
     })();
   })();
