@@ -13,3 +13,7 @@ Open the site, click **Admin** in the footer (or add `#admin` to the address) an
 
 ## Publishing changes
 Every push to the `main` branch on GitHub is published by Vercel automatically.
+
+## Domain
+
+Live at https://mccnsltd.com (bought on GoDaddy, DNS on Cloudflare, connected under Workers & Pages > mccns-website > Custom domains, together with www.mccnsltd.com).
