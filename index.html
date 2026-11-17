@@ -539,6 +539,30 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .adm-prev.movable.dragging { cursor: grabbing }
 .adm-prev.movable:focus-visible { outline: 2px solid var(--red) }
 .adm-hint { margin: 0; font: 400 12px/1.4 var(--sans); color: var(--muted) }
+/* Upcycled: problem, solution, call to action */
+.up-block { padding-block: 88px; border-bottom: 1px solid var(--line) }
+.up-h { margin: 0; font-family: var(--title); text-transform: uppercase; font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1; letter-spacing: .01em; color: var(--accent); display: flex; flex-wrap: wrap; gap: 0 .18em }
+.up-h span { font-weight: 300 }
+.up-h b { font-weight: 700 }
+.up-text { margin: 22px 0 0; font: 300 clamp(1.25rem, 2.2vw, 1.6rem)/1.45 var(--serif); color: var(--soft); max-width: 34ch }
+.up-text b { font-weight: 500; color: var(--ink) }
+.up-problem .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 48px; align-items: center }
+.up-sails { width: 100%; height: auto; color: var(--muted); opacity: .45 }
+@media (max-width: 800px) { .up-problem .wrap { grid-template-columns: 1fr } .up-sails { display: none } }
+.up-solution { background: var(--bg-2) }
+.up-solution .wrap, .up-cta .wrap { display: grid; justify-items: center; text-align: center }
+.up-solution .up-h, .up-cta .up-h { justify-content: center }
+.up-steps { list-style: none; margin: 56px 0 0; padding: 0; display: flex; align-items: flex-start; justify-content: center; gap: 28px; flex-wrap: wrap }
+.up-step { display: grid; justify-items: center; gap: 18px; width: 128px }
+.up-ic { width: 76px; height: 76px; color: var(--accent); display: grid; place-items: center }
+.up-ic svg { width: 100%; height: 100% }
+.up-lab { font: 300 1.25rem/1 var(--serif); color: var(--muted) }
+.up-lab b { font-weight: 700; color: var(--ink) }
+.up-arrow { width: 40px; color: var(--soft); padding-top: 32px }
+.up-arrow svg { width: 40px; height: 12px; display: block }
+@media (max-width: 700px) { .up-steps { gap: 18px 8px } .up-step { width: 120px } .up-arrow { display: none } }
+.up-cta .up-text { max-width: 40ch }
+[data-page="upcycled"] .back-row { justify-content: center }
 </style>
 </head>
 <body>
@@ -808,51 +832,41 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     </div>
   </div>
 
-  <div class="drawing">
+  <div class="up-block up-problem">
     <div class="wrap">
-      <figure class="figure">
-        <svg viewBox="0 0 640 420" role="img" aria-label="A retired sail with cutting lines for bag panels, a pocket and straps, becoming a bag">
-          <path d="M40 380 L200 30 L330 380 Z" fill="rgba(201,114,122,.06)" stroke="#94969a" stroke-width="2"/>
-          <g stroke="#94969a" stroke-opacity=".3"><line x1="80" y1="292" x2="298" y2="292"/><line x1="112" y1="222" x2="272" y2="222"/><line x1="144" y1="152" x2="246" y2="152"/></g>
-          <g fill="none" stroke="#c9727a" stroke-width="2" stroke-dasharray="7 5">
-            <rect x="96" y="300" width="96" height="66"/><rect x="200" y="300" width="96" height="66"/>
-            <rect x="160" y="160" width="64" height="52"/>
-            <rect x="128" y="232" width="148" height="14"/><rect x="128" y="256" width="148" height="14"/>
-          </g>
-          <g font-size="11" font-weight="700" letter-spacing="1.6" fill="#c9727a" text-anchor="middle">
-            <text x="144" y="338">PANEL A</text><text x="248" y="338">PANEL B</text><text x="192" y="190">POCKET</text><text x="202" y="227">STRAPS</text>
-          </g>
-          <g transform="translate(340 214)" stroke="#c9727a" fill="none" stroke-width="2"><circle cx="10" cy="0" r="7"/><circle cx="24" cy="-14" r="7"/><line x1="15" y1="-5" x2="52" y2="-42"/><line x1="15" y1="-9" x2="52" y2="18" stroke-opacity=".0"/></g>
-          <path d="M400 210 L460 210" stroke="#eeece7" stroke-width="2" marker-end="url(#ah)"/>
-          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#eeece7"/></marker></defs>
-          <path d="M520 150 Q520 96 556 96 Q592 96 592 150" fill="none" stroke="#eeece7" stroke-width="3"/>
-          <path d="M490 150 L622 150 L612 330 L500 330 Z" fill="rgba(201,114,122,.12)" stroke="#eeece7" stroke-width="2.5"/>
-          <g stroke="#eeece7" stroke-opacity=".35" stroke-dasharray="3 4"><line x1="498" y1="160" x2="614" y2="160"/><line x1="504" y1="320" x2="608" y2="320"/></g>
-          <rect x="532" y="214" width="48" height="40" fill="none" stroke="#c9727a" stroke-width="2"/>
-          <g font-size="11" font-weight="700" letter-spacing="1.6" fill="#94969a" text-anchor="middle"><text x="185" y="408">RETIRED SAIL</text><text x="556" y="362">NEW PRODUCT</text></g>
-        </svg>
-        <figcaption><span>Cutting plan</span><span>Sail to bag</span></figcaption>
-      </figure>
-      <div class="copy">
-        <div class="eyebrow">Nothing wasted</div>
-        <h2 class="h-m" style="margin-top:14px">Two ways back onto the water</h2>
-        <p>Every sail that comes in is checked. If it can still sail, it goes to a new boat. If not, the best of the cloth is cut into new products.</p>
+      <div class="up-copy">
+        <h2 class="up-h"><span>The</span><b>problem</b></h2>
+        <p class="up-text"><b>Old sails</b> are made of <b>strong &amp; durable materials</b> but are <b>often discarded</b>.</p>
       </div>
+      <svg class="up-sails" viewBox="0 0 420 300" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.2">
+          <line x1="70" y1="10" x2="70" y2="290"/><path d="M74 16 Q150 110 168 280 L74 280 Z"/><path d="M66 40 L10 280 L66 280"/>
+          <g stroke-opacity=".6"><line x1="74" y1="80" x2="128" y2="78"/><line x1="74" y1="140" x2="150" y2="136"/><line x1="74" y1="200" x2="162" y2="196"/></g>
+          <line x1="250" y1="30" x2="250" y2="290"/><path d="M254 36 Q320 120 330 280 L254 280 Z"/>
+          <path d="M300 30 Q420 60 410 280 L330 280" stroke-opacity=".7"/>
+          <g stroke-opacity=".5"><line x1="254" y1="110" x2="296" y2="108"/><line x1="254" y1="190" x2="320" y2="186"/></g>
+        </svg>
     </div>
   </div>
 
-  <div class="services">
+  <div class="up-block up-solution">
     <div class="wrap">
-      <div class="eyebrow">What we do</div>
-      <h2 class="h-l">Less waste from the sailing world</h2>
-      <ul class="svc">
-        <li><b>Upcycled products</b><span>Bags and accessories cut from retired sails.</span></li>
-        <li><b>Sail collection</b><span>Old sails taken back from owners, clubs and charter fleets.</span></li>
-        <li><b>Second life sails</b><span>Usable sails listed and passed on through ReSail.</span></li>
-        <li><b>Green initiatives</b><span>Projects that cut waste in the marine industry.</span></li>
-        <li><b>Partnerships</b><span>Work with clubs, events and brands that want to reuse sailcloth.</span></li>
-        <li><b>Made in Malta</b><span>Cut and sewn in Malta.</span></li>
-      </ul>
+      <h2 class="up-h"><span>The</span><b>solution</b></h2>
+      <ol class="up-steps" aria-label="Reclaim, repurpose, redesign, reuse">
+          <li class="up-step"><span class="up-ic"><svg viewBox="0 0 64 64" aria-hidden="true"><line x1="30" y1="6" x2="30" y2="48" stroke="currentColor" stroke-width="2.5"/><path d="M33 9 Q48 26 52 46 L33 46 Z" fill="currentColor"/><path d="M27 16 L13 46 L27 46 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M8 50 L58 50 L52 58 L14 58 Z" fill="currentColor"/></svg></span><span class="up-lab">re<b>claim</b></span></li>
+          <li class="up-arrow" aria-hidden="true"><svg viewBox="0 0 40 12"><line x1="0" y1="6" x2="36" y2="6" stroke="currentColor" stroke-width="1.5"/><path d="M30 1 L37 6 L30 11" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></li>
+          <li class="up-step"><span class="up-ic"><svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M12 34 L52 34 Q50 54 32 56 Q14 54 12 34 Z"/><path d="M20 42 Q26 38 32 42 T44 42"/><circle cx="26" cy="22" r="3.5" fill="currentColor" stroke="none"/><circle cx="37" cy="17" r="3.5" fill="currentColor" stroke="none"/><circle cx="31" cy="8" r="2" fill="currentColor" stroke="none"/></svg></span><span class="up-lab">re<b>purpose</b></span></li>
+          <li class="up-arrow" aria-hidden="true"><svg viewBox="0 0 40 12"><line x1="0" y1="6" x2="36" y2="6" stroke="currentColor" stroke-width="1.5"/><path d="M30 1 L37 6 L30 11" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></li>
+          <li class="up-step"><span class="up-ic"><svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M24 44 Q24 38 20 34 A14 14 0 1 1 44 34 Q40 38 40 44 Z"/><line x1="25" y1="50" x2="39" y2="50"/><line x1="27" y1="56" x2="37" y2="56"/><line x1="32" y1="4" x2="32" y2="9"/><line x1="12" y1="12" x2="15.5" y2="15.5"/><line x1="52" y1="12" x2="48.5" y2="15.5"/><line x1="5" y1="28" x2="10" y2="28"/><line x1="54" y1="28" x2="59" y2="28"/></svg></span><span class="up-lab">re<b>design</b></span></li>
+          <li class="up-arrow" aria-hidden="true"><svg viewBox="0 0 40 12"><line x1="0" y1="6" x2="36" y2="6" stroke="currentColor" stroke-width="1.5"/><path d="M30 1 L37 6 L30 11" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></li>
+          <li class="up-step"><span class="up-ic"><svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><path d="M12 22 L52 22 L54 58 L10 58 Z"/><path d="M23 28 L23 16 Q23 7 32 7 Q41 7 41 16 L41 28" stroke-linecap="round"/></svg></span><span class="up-lab">re<b>use</b></span></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="up-block up-cta">
+    <div class="wrap">
+      <h2 class="up-h"><span>Call to</span><b>action</b></h2>
+      <p class="up-text">We make <b>sails</b>. But we are also part of a <b>community</b> that works with <b>what comes after</b>. Be part of the <b>change</b>.</p>
     </div>
   </div>
 
