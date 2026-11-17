@@ -21,10 +21,12 @@ create table if not exists public.fleet (
   status text not null default 'current' check (status in ('current', 'past')),
   mgmt jsonb not null default '{}'::jsonb,
   photo text,
+  photo_pos text,
   example boolean not null default false,
   ord double precision not null default 0,
   created_at timestamptz not null default now()
 );
+alter table public.fleet add column if not exists photo_pos text;
 
 -- Crew members
 create table if not exists public.crew (

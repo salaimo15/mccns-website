@@ -535,6 +535,10 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .adm-photo { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 12px }
 .adm-prev { width: min(100%, 300px); background-position: center; background-size: cover }
 .adm-photo-btns { justify-items: center; grid-auto-flow: column; align-items: center; gap: 16px }
+.adm-prev.movable { cursor: grab; touch-action: none; outline-offset: 3px }
+.adm-prev.movable.dragging { cursor: grabbing }
+.adm-prev.movable:focus-visible { outline: 2px solid var(--red) }
+.adm-hint { margin: 0; font: 400 12px/1.4 var(--sans); color: var(--muted) }
 </style>
 </head>
 <body>
@@ -876,7 +880,8 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
   <form class="adm-card" id="adm-form" novalidate>
     <div class="adm-head"><b id="adm-title">Edit</b><button type="button" class="adm-x" id="adm-cancel" aria-label="Close">×</button></div>
     <div class="adm-photo">
-      <div class="adm-prev" id="adm-prev"></div>
+      <div class="adm-prev" id="adm-prev" aria-label="Photo preview. Drag, or use the arrow keys, to choose the framing."></div>
+      <p class="adm-hint" id="adm-pos-hint" hidden>Drag the photo to choose how it is framed on the card.</p>
       <div class="adm-photo-btns">
         <label class="adm-file">Choose photo<input type="file" id="adm-file" accept="image/jpeg,image/png,image/webp"></label>
         <button type="button" class="adm-link" id="adm-nophoto">Remove photo</button>
@@ -1094,7 +1099,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     var fleetView = 'current', state = { fleet: [], crew: [] }, editing = { fleet: false, crew: false }, sb = null, isOwner = false;
     var CFG = window.MCCNS_CONFIG || {}, PUBLIC_PREFIX = (CFG.supabaseUrl || '').replace(/\/$/, '') + '/storage/v1/object/public/';
     /* database adapter: rows <-> page objects */
-    var COLS = { fleet: ['name', 'type', 'length', 'built', 'port', 'link', 'status', 'mgmt', 'photo', 'example'], crew: ['name', 'role', 'yacht', 'photo', 'example'] };
+    var COLS = { fleet: ['name', 'type', 'length', 'built', 'port', 'link', 'status', 'mgmt', 'photo', 'photo_pos', 'example'], crew: ['name', 'role', 'yacht', 'photo', 'example'] };
     function fromRow(kind, r) { var o = { _id: r.id, order: r.ord }; COLS[kind].forEach(function (c) { o[c] = r[c]; }); if (kind === 'fleet') o.use = r.yacht_use; return o; }
     function toRow(kind, o) { var r = { ord: o.order }; COLS[kind].forEach(function (c) { if (o[c] !== undefined) r[c] = o[c]; }); if (kind === 'fleet') r.yacht_use = o.use || null; return r; }
     async function load(kind) {
@@ -1115,6 +1120,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     function initials(s) { return (s || '').trim().split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join('') || '·'; }
     function safeUrl(u) { if (typeof u !== 'string') return ''; u = u.trim(); if (!u) return ''; if (!/^https?:\/\//i.test(u)) u = 'https://' + u; try { var x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : ''; } catch (e) { return ''; } }
     function isPast(d) { return d.status === 'past'; }
+    function safePos(p) { return typeof p === 'string' && /^\d{1,3}(\.\d+)?% \d{1,3}(\.\d+)?%$/.test(p) ? p : '50% 50%'; }
     function safePhoto(p) { if (typeof p !== 'string') return ''; if (/^data:image\/(webp|jpeg|png);base64,/.test(p)) return p; if (PUBLIC_PREFIX.length > 30 && p.indexOf(PUBLIC_PREFIX) === 0) return p; if (/^img\/[\w.-]+$/.test(p)) return p; return ''; }
 
     function tools(kind, i, n, pos) {
@@ -1135,7 +1141,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       view.forEach(function (i, pos) {
         var d = all[i];
         var a = el('article', 'boat' + (past ? ' past' : '')), img = el('div', 'boat-img'), ph = safePhoto(d.photo);
-        if (ph) { var im = new Image(); im.src = ph; im.alt = d.name || 'Yacht'; img.appendChild(im); } else img.innerHTML = BOAT_SVG;
+        if (ph) { var im = new Image(); im.src = ph; im.alt = d.name || 'Yacht'; im.style.objectPosition = safePos(d.photo_pos); img.appendChild(im); } else img.innerHTML = BOAT_SVG;
         if (d.use === 'private' || d.use === 'commercial') img.appendChild(el('span', 'tag use-' + d.use, d.use === 'private' ? 'Private' : 'Commercial'));
         a.appendChild(img);
         var body = el('div', 'boat-body'); body.appendChild(el('b', 'co', d.name || 'Yacht name'));
@@ -1191,16 +1197,37 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     }
 
     /* editor */
-    var cur = null, photo = '', modal = document.getElementById('adm-modal'), form = document.getElementById('adm-form');
+    var cur = null, photo = '', photoPos = '50% 50%', modal = document.getElementById('adm-modal'), form = document.getElementById('adm-form');
     var prev = document.getElementById('adm-prev'), err = document.getElementById('adm-err'), del = document.getElementById('adm-del'), save = document.getElementById('adm-save');
-    function showPrev() { prev.style.backgroundImage = photo ? 'url("' + photo + '")' : ''; prev.textContent = photo ? '' : 'No photo'; }
+    function showPrev() {
+      prev.style.backgroundImage = photo ? 'url("' + photo + '")' : ''; prev.textContent = photo ? '' : 'No photo';
+      prev.style.backgroundPosition = photoPos;
+      var can = !!photo && cur && cur.kind === 'fleet';
+      prev.classList.toggle('movable', can); prev.tabIndex = can ? 0 : -1;
+      document.getElementById('adm-pos-hint').hidden = !can;
+    }
+    /* drag the photo (or use the arrow keys) to choose its framing */
+    (function () {
+      var drag = null;
+      function parse() { var p = photoPos.split(' '); return [parseFloat(p[0]), parseFloat(p[1])]; }
+      function set(x, y) { x = Math.max(0, Math.min(100, x)); y = Math.max(0, Math.min(100, y)); photoPos = x.toFixed(1) + '% ' + y.toFixed(1) + '%'; prev.style.backgroundPosition = photoPos; }
+      prev.addEventListener('pointerdown', function (e) { if (!prev.classList.contains('movable')) return; e.preventDefault(); var p = parse(); drag = { x: e.clientX, y: e.clientY, px: p[0], py: p[1] }; prev.setPointerCapture(e.pointerId); prev.classList.add('dragging'); });
+      prev.addEventListener('pointermove', function (e) { if (!drag) return; var r = prev.getBoundingClientRect(); set(drag.px - (e.clientX - drag.x) / r.width * 150, drag.py - (e.clientY - drag.y) / r.height * 150); });
+      function end() { drag = null; prev.classList.remove('dragging'); }
+      prev.addEventListener('pointerup', end); prev.addEventListener('pointercancel', end);
+      prev.addEventListener('keydown', function (e) {
+        if (!prev.classList.contains('movable')) return;
+        var d = { ArrowLeft: [-5, 0], ArrowRight: [5, 0], ArrowUp: [0, -5], ArrowDown: [0, 5] }[e.key]; if (!d) return;
+        e.preventDefault(); var p = parse(); set(p[0] + d[0], p[1] + d[1]);
+      });
+    })();
     function openEditor(kind, i) {
       var K = KINDS[kind], d = i >= 0 ? state[kind][i] : {};
       cur = { kind: kind, id: i >= 0 ? d._id : null, order: d.order };
       document.getElementById('adm-title').textContent = (i >= 0 ? 'Edit ' : 'Add ') + K.title;
       var box = document.getElementById('adm-fields'); box.textContent = '';
       K.fields.forEach(function (f) { var lab = el('label', f[2] ? 'wide' : null, f[1]), inp = el('input'); inp.id = 'adm-f-' + kind + '-' + f[0]; inp.value = d[f[0]] || ''; inp.maxLength = f[0] === 'link' ? 500 : 80; if (f[0] === 'link') { inp.type = 'url'; inp.placeholder = 'https://'; } lab.appendChild(inp); box.appendChild(lab); });
-      photo = safePhoto(d.photo); showPrev();
+      photo = safePhoto(d.photo); photoPos = safePos(d.photo_pos); showPrev();
       document.getElementById('adm-example').checked = !!d.example;
       var isF = kind === 'fleet'; document.getElementById('adm-fleet').hidden = !isF; document.getElementById('adm-example-wrap').hidden = isF;
       var st = i >= 0 ? (isPast(d) ? 'past' : 'current') : fleetView; document.getElementById('adm-st-current').checked = st === 'current'; document.getElementById('adm-st-past').checked = st === 'past';
@@ -1214,7 +1241,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     document.getElementById('adm-cancel').addEventListener('click', close);
     modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
-    document.getElementById('adm-nophoto').addEventListener('click', function () { photo = ''; showPrev(); });
+    document.getElementById('adm-nophoto').addEventListener('click', function () { photo = ''; photoPos = '50% 50%'; showPrev(); });
 
     async function shrink(file, max) {
       var url = URL.createObjectURL(file);
@@ -1234,7 +1261,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     document.getElementById('adm-file').addEventListener('change', async function (e) {
       var f = e.target.files && e.target.files[0]; if (!f || !cur) return;
       err.hidden = true; prev.textContent = 'Loading';
-      try { photo = await shrink(f, KINDS[cur.kind].max); showPrev(); }
+      try { photo = await shrink(f, KINDS[cur.kind].max); photoPos = '50% 50%'; showPrev(); }
       catch (x) { showPrev(); err.textContent = 'That photo could not be read. Use a JPG, PNG or WebP image.'; err.hidden = false; }
     });
     form.addEventListener('submit', async function (e) {
@@ -1246,6 +1273,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       data.photo = photo; data.example = document.getElementById('adm-example').checked;
       if (cur.kind === 'fleet') {
         data.example = false;
+        data.photo_pos = photo ? photoPos : null;
         data.status = document.getElementById('adm-st-past').checked ? 'past' : 'current';
         data.use = document.getElementById('adm-use-private').checked ? 'private' : document.getElementById('adm-use-commercial').checked ? 'commercial' : '';
         data.mgmt = { yacht: document.getElementById('adm-m-yacht').checked, crew: document.getElementById('adm-m-crew').checked, apa: document.getElementById('adm-m-apa').checked };
