@@ -531,6 +531,10 @@ main { overflow-x: clip }
 .co, .page .pagehead .h-xl { font-family: var(--title); font-weight: 300; letter-spacing: .02em }
 a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .admin-link { color: var(--muted); text-decoration: none } .admin-link:hover { color: var(--ink) }
+/* editor: centred photo preview */
+.adm-photo { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 12px }
+.adm-prev { width: min(100%, 300px); background-position: center; background-size: cover }
+.adm-photo-btns { justify-items: center; grid-auto-flow: column; align-items: center; gap: 16px }
 </style>
 </head>
 <body>
@@ -1300,7 +1304,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       btn.disabled = false;
       if (res.error) { lerr.textContent = 'Wrong email or password.'; lerr.hidden = false; return; }
       document.getElementById('login-pass').value = ''; lm.hidden = true; setAdmin(true);
-      var who = res.data && res.data.user && res.data.user.email;
+      var who = (res.data && res.data.user && res.data.user.email) || 'admin';
       toast(window.__mccnsLoadError ? 'Signed in as ' + who + ', but the database answered: ' + (window.__mccnsLoadError.message || 'not reachable') : 'Signed in as ' + who + '. Open Yacht & Crew Management and use Edit fleet or Edit crew.');
     });
     (async function start() {
