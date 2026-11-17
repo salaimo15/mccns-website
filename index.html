@@ -540,6 +540,12 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .adm-prev.movable:focus-visible { outline: 2px solid var(--red) }
 .adm-hint { margin: 0; font: 400 12px/1.4 var(--sans); color: var(--muted) }
 /* Upcycled: problem, solution, call to action */
+.up-hero { padding-block: 72px 8px }
+.up-hero .wrap { display: grid; justify-items: center; text-align: center; gap: 22px }
+.up-logo { margin: 0 0 6px; line-height: 0 }
+.up-logo img { height: clamp(220px, 34vh, 320px); width: auto; display: block }
+.up-hero .eyebrow { margin: 0 }
+.up-hero .lede { margin: 0; max-width: 46ch }
 .up-block { padding-block: 72px }
 .up-block .wrap { display: grid; justify-items: center; text-align: center }
 .up-problem { padding-top: 88px }
@@ -941,14 +947,11 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 
 <!-- UPCYCLED -->
 <section class="page" data-page="upcycled" style="--accent: var(--rust)" hidden>
-  <div class="pagehead">
+  <div class="up-hero">
     <div class="wrap">
-      <div>
-        <div class="eyebrow">Sustainability</div>
-        <h1 class="h-xl">Upcycled</h1>
-        <p class="lede">Sails wear out long before the cloth does. We give it a second life and run green initiatives for the marine world.</p>
-      </div>
-      <div class="panel bare tall-bare"><img src="img/logo-upcycled.webp" alt="UPCYCLED logo"></div>
+      <h1 class="up-logo"><img src="img/logo-upcycled.webp" alt="UPCYCLED"></h1>
+      <div class="eyebrow">Sustainability</div>
+      <p class="lede">Sails wear out long before the cloth does. We give it a second life and run green initiatives for the marine world.</p>
     </div>
   </div>
 
