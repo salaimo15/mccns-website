@@ -588,6 +588,35 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .shop-link[aria-disabled="true"] { color: var(--muted); pointer-events: none; border-style: dashed }
 [data-page="uniforms"] .pagehead { border-bottom: 0 }
 [data-page="uniforms"] .back-row { justify-content: center; padding-block: 24px 88px }
+/* catalog photos, quote status, admin requests */
+.cat.has-photo { padding-top: 0 }
+.cat-photo { margin: 0 -24px 8px; aspect-ratio: 4 / 3; overflow: hidden; background: var(--bg-3) }
+.cat-photo img { width: 100%; height: 100%; object-fit: cover; display: block }
+.cat { position: relative }
+.cat .tools { position: absolute; top: 10px; right: 10px; z-index: 2 }
+.cats .add-card { min-height: 160px }
+.cats .empty-note { grid-column: 1 / -1; text-align: center }
+.cat-edit { margin-top: 20px }
+.adm-select { background: var(--bg); border: 1px solid var(--line); color: var(--ink); font: 400 15px/1.3 var(--serif); padding: 10px 12px }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0 }
+.qdone { margin-top: 40px; display: grid; gap: 8px; justify-items: center; padding: 32px 28px; border: 1px solid var(--accent); max-width: 560px }
+.qdone b { font: 600 13px/1.3 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent) }
+.qdone span { font: 300 1.15rem/1.5 var(--serif); color: var(--soft) }
+.adm-err a { color: inherit }
+.qreqs { margin-top: 56px; width: 100%; max-width: 820px; text-align: left; border-top: 1px solid var(--line); padding-top: 28px }
+.qreqs-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap }
+.qreqs-head h3 { margin: 0; font: 600 13px/1.3 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent) }
+.qreqs-head .br-note { margin: 0 }
+#q-list { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 12px }
+.qreq { background: var(--bg-2); border: 1px solid var(--line); border-left: 3px solid var(--accent); padding: 18px 20px; display: grid; gap: 6px }
+.qreq.done { border-left-color: var(--line); opacity: .7 }
+.qreq-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px }
+.qreq-head b { font: 600 1rem/1.3 var(--sans); color: var(--ink) }
+.qreq-head span { font: 400 12px/1.4 var(--sans); color: var(--muted) }
+.qreq > div:not(.qreq-head):not(.qreq-act) { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; font: 300 1rem/1.45 var(--serif); color: var(--soft) }
+.qreq > div:not(.qreq-head):not(.qreq-act) b { font: 500 10px/1.9 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--muted) }
+.qreq a { color: var(--ink) }
+.qreq-act { display: flex; gap: 14px; align-items: center; margin-top: 8px }
 </style>
 </head>
 <body>
@@ -816,7 +845,8 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     <div class="wrap">
       <h2 class="up-h"><span>Our</span><b>catalog</b></h2>
       <p class="up-text">Uniforms and equipment for yacht crews, finished with the yacht's name or logo.</p>
-      <ul class="cats">
+      <button type="button" class="admin-btn cat-edit" id="cat-edit" hidden>Edit catalog</button>
+      <ul class="cats" id="cat-list">
         <li class="cat"><svg class="cat-ic" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M22 8 L14 11 L4 20 L10 30 L16 26 L16 58 L48 58 L48 26 L54 30 L60 20 L50 11 L42 8 Q40 14 32 14 Q24 14 22 8 Z"/><path d="M27 9 L32 19 L37 9"/></svg><b>Polo shirts</b><span>Breathable piqué and technical polos for deck and interior crew.</span></li>
         <li class="cat"><svg class="cat-ic" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M22 8 L14 11 L4 20 L10 30 L16 26 L16 58 L48 58 L48 26 L54 30 L60 20 L50 11 L42 8 L32 18 Z"/><line x1="32" y1="18" x2="32" y2="58"/><circle cx="35" cy="28" r="1.2" fill="currentColor"/><circle cx="35" cy="38" r="1.2" fill="currentColor"/><circle cx="35" cy="48" r="1.2" fill="currentColor"/></svg><b>Shirts</b><span>Oxford and technical shirts for guests on board and evenings ashore.</span></li>
         <li class="cat"><svg class="cat-ic" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M14 10 L50 10 L56 52 L36 54 L32 28 L28 54 L8 52 Z"/><line x1="14" y1="16" x2="50" y2="16"/></svg><b>Shorts and trousers</b><span>Hard wearing bottoms cut for work on deck.</span></li>
@@ -824,7 +854,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
         <li class="cat"><svg class="cat-ic" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M10 40 Q10 14 32 14 Q54 14 54 40 Z"/><path d="M10 40 Q32 34 60 46 Q46 52 10 46"/><circle cx="32" cy="12" r="2" fill="currentColor"/></svg><b>Caps and accessories</b><span>Caps, belts and small items in the yacht's colours.</span></li>
         <li class="cat"><svg class="cat-ic" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 22 L52 22 L54 58 L10 58 Z"/><path d="M23 28 L23 16 Q23 7 32 7 Q41 7 41 16 L41 28"/></svg><b>Bags</b><span>Crew bags and kit bags, branded for the yacht.</span></li>
       </ul>
-      <p class="br-note">Full catalog with photos and sizes coming soon.</p>
+      <p class="br-note" id="cat-note">Full catalog with photos and sizes coming soon.</p>
     </div>
   </div>
 
@@ -833,6 +863,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       <h2 class="up-h"><span>Get a</span><b>quotation</b></h2>
       <p class="up-text">Tell us about your yacht and crew, and we will reply with a quotation.</p>
       <form class="qform" id="qform" novalidate>
+        <input class="hp" id="q-company" tabindex="-1" autocomplete="off" aria-hidden="true">
         <label>Your name<input id="q-name" autocomplete="name" required></label>
         <label>Yacht<input id="q-yacht"></label>
         <label>Email<input id="q-email" type="email" autocomplete="email" required></label>
@@ -851,8 +882,13 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
         </fieldset>
         <label class="wide">Details<textarea id="q-msg" rows="4" placeholder="Colours, logo, sizes, quantities"></textarea></label>
         <p class="adm-err wide" id="q-err" hidden></p>
-        <div class="wide qsend"><button type="submit" class="btn">Prepare email <span class="arrow">→</span></button><span class="br-note">Opens your email app with the request ready to send to info@br1yacht.com.</span></div>
+        <div class="wide qsend"><button type="submit" class="btn" id="q-send">Send request <span class="arrow">→</span></button><span class="br-note" id="q-note">We reply by email, usually within two working days.</span></div>
       </form>
+      <div class="qdone" id="q-done" hidden><b>Thank you.</b><span>Your request has reached us. We will reply to you by email.</span></div>
+      <div class="qreqs" id="q-reqs" hidden>
+        <div class="qreqs-head"><h3>Quotation requests</h3><span class="br-note" id="q-count"></span></div>
+        <ul id="q-list"></ul>
+      </div>
     </div>
   </div>
 
@@ -966,6 +1002,13 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
           <label><input type="checkbox" id="adm-m-apa"><span>APA</span></label>
         </div>
       </div>
+    </div>
+    <div class="adm-group" id="adm-catalog" hidden>
+      <span class="adm-gl">Category</span>
+      <select id="adm-cat-category" class="adm-select">
+        <option value="polo">Polo shirts</option><option value="shirt">Shirts</option><option value="shorts">Shorts and trousers</option>
+        <option value="jacket">Outerwear</option><option value="cap">Caps and accessories</option><option value="bag">Bags</option><option value="other">Other</option>
+      </select>
     </div>
     <label class="adm-check" id="adm-example-wrap"><input type="checkbox" id="adm-example"> Mark as example</label>
     <p class="adm-err" id="adm-err" hidden></p>
@@ -1149,18 +1192,28 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       fleet: { coll: 'fleet', title: 'yacht', max: 1100,
         fields: [['name', 'Yacht name', 1], ['type', 'Type'], ['length', 'Length'], ['built', 'Built'], ['port', 'Home port'], ['link', 'Broker page link', 1]] },
       crew: { coll: 'crew', title: 'crew member', max: 480,
-        fields: [['name', 'Name', 1], ['role', 'Role'], ['yacht', 'Yacht', 1]] }
+        fields: [['name', 'Name', 1], ['role', 'Role'], ['yacht', 'Yacht', 1]] },
+      catalog: { coll: 'catalog', title: 'product', max: 1100,
+        fields: [['name', 'Product name', 1], ['description', 'Description', 1]] }
     };
-    var fleetView = 'current', state = { fleet: [], crew: [] }, editing = { fleet: false, crew: false }, sb = null, isOwner = false;
+    var CAT_ICONS = {
+      polo: '<path d="M22 8 L14 11 L4 20 L10 30 L16 26 L16 58 L48 58 L48 26 L54 30 L60 20 L50 11 L42 8 Q40 14 32 14 Q24 14 22 8 Z"/><path d="M27 9 L32 19 L37 9"/>',
+      shirt: '<path d="M22 8 L14 11 L4 20 L10 30 L16 26 L16 58 L48 58 L48 26 L54 30 L60 20 L50 11 L42 8 L32 18 Z"/><line x1="32" y1="18" x2="32" y2="58"/>',
+      shorts: '<path d="M14 10 L50 10 L56 52 L36 54 L32 28 L28 54 L8 52 Z"/><line x1="14" y1="16" x2="50" y2="16"/>',
+      jacket: '<path d="M22 8 L12 12 L6 58 L26 58 L26 22 M42 8 L52 12 L58 58 L38 58 L38 22"/><path d="M22 8 Q32 16 42 8"/><path d="M26 22 L32 30 L38 22"/><line x1="32" y1="30" x2="32" y2="58"/>',
+      cap: '<path d="M10 40 Q10 14 32 14 Q54 14 54 40 Z"/><path d="M10 40 Q32 34 60 46 Q46 52 10 46"/>',
+      bag: '<path d="M12 22 L52 22 L54 58 L10 58 Z"/><path d="M23 28 L23 16 Q23 7 32 7 Q41 7 41 16 L41 28"/>',
+      other: '<path d="M34 8 L56 8 L56 30 L30 56 L8 34 Z"/><circle cx="46" cy="18" r="3"/>' };
+    var fleetView = 'current', state = { fleet: [], crew: [], catalog: [] }, editing = { fleet: false, crew: false, catalog: false }, catLoaded = false, sb = null, isOwner = false;
     var CFG = window.MCCNS_CONFIG || {}, PUBLIC_PREFIX = (CFG.supabaseUrl || '').replace(/\/$/, '') + '/storage/v1/object/public/';
     /* database adapter: rows <-> page objects */
-    var COLS = { fleet: ['name', 'type', 'length', 'built', 'port', 'link', 'status', 'mgmt', 'photo', 'photo_pos', 'example'], crew: ['name', 'role', 'yacht', 'photo', 'example'] };
+    var COLS = { fleet: ['name', 'type', 'length', 'built', 'port', 'link', 'status', 'mgmt', 'photo', 'photo_pos', 'example'], crew: ['name', 'role', 'yacht', 'photo', 'example'], catalog: ['name', 'category', 'description', 'photo', 'photo_pos'] };
     function fromRow(kind, r) { var o = { _id: r.id, order: r.ord }; COLS[kind].forEach(function (c) { o[c] = r[c]; }); if (kind === 'fleet') o.use = r.yacht_use; return o; }
     function toRow(kind, o) { var r = { ord: o.order }; COLS[kind].forEach(function (c) { if (o[c] !== undefined) r[c] = o[c]; }); if (kind === 'fleet') r.yacht_use = o.use || null; return r; }
     async function load(kind) {
       var res = await sb.from(kind).select('*').order('ord', { ascending: true });
       if (res.error) throw res.error;
-      state[kind] = res.data.map(function (r) { return fromRow(kind, r); }); render(kind);
+      state[kind] = res.data.map(function (r) { return fromRow(kind, r); }); if (kind === 'catalog') catLoaded = true; render(kind);
     }
     async function uploadPhoto(kind, dataUrl) {
       var blob = await (await fetch(dataUrl)).blob(), ext = blob.type === 'image/jpeg' ? 'jpg' : 'webp';
@@ -1232,7 +1285,25 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       });
       if (isOwner) { var add = el('button', 'add-card', '+ Add crew member'); add.type = 'button'; add.addEventListener('click', function () { openEditor('crew', -1); }); crList.parentElement.querySelector('.add-card') && crList.parentElement.querySelector('.add-card').remove(); crList.after(add); }
     }
-    function render(kind) { if (kind === 'fleet') renderFleet(); else renderCrew(); }
+    var catList = document.getElementById('cat-list');
+    function renderCatalog() {
+      if (!catLoaded && !isOwner) return; /* keep the built-in category cards until the database answers */
+      var list = state.catalog; catList.textContent = '';
+      catList.parentElement.classList.toggle('editing', editing.catalog);
+      document.getElementById('cat-note').hidden = list.some(function (d) { return !!d.photo; });
+      if (!list.length && !editing.catalog) catList.appendChild(el('li', 'empty-note', 'Catalog coming soon.'));
+      list.forEach(function (d, i) {
+        var li = el('li', 'cat'), ph = safePhoto(d.photo);
+        if (ph) { var fig = el('div', 'cat-photo'), im = new Image(); im.src = ph; im.alt = d.name || 'Product'; im.style.objectPosition = safePos(d.photo_pos); fig.appendChild(im); li.appendChild(fig); li.classList.add('has-photo'); }
+        else { var ic = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); ic.setAttribute('viewBox', '0 0 64 64'); ic.setAttribute('class', 'cat-ic'); ic.setAttribute('aria-hidden', 'true'); ic.setAttribute('fill', 'none'); ic.setAttribute('stroke', 'currentColor'); ic.setAttribute('stroke-width', '2'); ic.setAttribute('stroke-linejoin', 'round'); ic.setAttribute('stroke-linecap', 'round'); ic.innerHTML = CAT_ICONS[d.category] || CAT_ICONS.other; li.appendChild(ic); }
+        li.appendChild(el('b', null, d.name || 'Product'));
+        if (d.description) li.appendChild(el('span', null, d.description));
+        if (isOwner) li.appendChild(tools('catalog', i, list.length));
+        catList.appendChild(li);
+      });
+      if (isOwner) { var add = el('button', 'add-card', '+ Add product'); add.type = 'button'; add.addEventListener('click', function () { openEditor('catalog', -1); }); catList.appendChild(add); }
+    }
+    function render(kind) { if (kind === 'fleet') renderFleet(); else if (kind === 'catalog') renderCatalog(); else renderCrew(); }
 
     /* reorder: swap order values with the neighbour */
     var busy = false;
@@ -1257,7 +1328,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     function showPrev() {
       prev.style.backgroundImage = photo ? 'url("' + photo + '")' : ''; prev.textContent = photo ? '' : 'No photo';
       prev.style.backgroundPosition = photoPos;
-      var can = !!photo && cur && cur.kind === 'fleet';
+      var can = !!photo && cur && (cur.kind === 'fleet' || cur.kind === 'catalog');
       prev.classList.toggle('movable', can); prev.tabIndex = can ? 0 : -1;
       document.getElementById('adm-pos-hint').hidden = !can;
     }
@@ -1281,10 +1352,12 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       cur = { kind: kind, id: i >= 0 ? d._id : null, order: d.order };
       document.getElementById('adm-title').textContent = (i >= 0 ? 'Edit ' : 'Add ') + K.title;
       var box = document.getElementById('adm-fields'); box.textContent = '';
-      K.fields.forEach(function (f) { var lab = el('label', f[2] ? 'wide' : null, f[1]), inp = el('input'); inp.id = 'adm-f-' + kind + '-' + f[0]; inp.value = d[f[0]] || ''; inp.maxLength = f[0] === 'link' ? 500 : 80; if (f[0] === 'link') { inp.type = 'url'; inp.placeholder = 'https://'; } lab.appendChild(inp); box.appendChild(lab); });
+      K.fields.forEach(function (f) { var lab = el('label', f[2] ? 'wide' : null, f[1]), inp = el('input'); inp.id = 'adm-f-' + kind + '-' + f[0]; inp.value = d[f[0]] || ''; inp.maxLength = f[0] === 'link' ? 500 : f[0] === 'description' ? 200 : 80; if (f[0] === 'link') { inp.type = 'url'; inp.placeholder = 'https://'; } lab.appendChild(inp); box.appendChild(lab); });
       photo = safePhoto(d.photo); photoPos = safePos(d.photo_pos); showPrev();
       document.getElementById('adm-example').checked = !!d.example;
-      var isF = kind === 'fleet'; document.getElementById('adm-fleet').hidden = !isF; document.getElementById('adm-example-wrap').hidden = isF;
+      var isF = kind === 'fleet', isC = kind === 'catalog'; document.getElementById('adm-fleet').hidden = !isF; document.getElementById('adm-example-wrap').hidden = isF || isC;
+      document.getElementById('adm-catalog').hidden = !isC; document.getElementById('adm-cat-category').value = d.category || 'other';
+      document.getElementById('adm-pos-hint').textContent = 'Drag the photo to choose how it is framed on the ' + (isC ? 'catalog' : '') + ' card.';
       var st = i >= 0 ? (isPast(d) ? 'past' : 'current') : fleetView; document.getElementById('adm-st-current').checked = st === 'current'; document.getElementById('adm-st-past').checked = st === 'past';
       document.getElementById('adm-use-private').checked = d.use === 'private'; document.getElementById('adm-use-commercial').checked = d.use === 'commercial';
       var mm = d.mgmt || {}; ['yacht', 'crew', 'apa'].forEach(function (k) { document.getElementById('adm-m-' + k).checked = !!mm[k]; });
@@ -1326,6 +1399,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       if (!data.name) { err.textContent = 'Add a name before saving.'; err.hidden = false; return; }
       if (data.link) { var okl = safeUrl(data.link); if (!okl) { err.textContent = 'The broker link is not a valid web address.'; err.hidden = false; return; } data.link = okl; }
       data.photo = photo; data.example = document.getElementById('adm-example').checked;
+      if (cur.kind === 'catalog') { data.category = document.getElementById('adm-cat-category').value; data.photo_pos = photo ? photoPos : null; delete data.example; }
       if (cur.kind === 'fleet') {
         data.example = false;
         data.photo_pos = photo ? photoPos : null;
@@ -1352,9 +1426,10 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       catch (x) { err.textContent = 'Could not delete. Try again.' + (x && x.message ? ' (' + x.message + ')' : ''); err.hidden = false; }
     });
 
-    [['fleet', 'fl-edit'], ['crew', 'cr-edit']].forEach(function (p) {
-      var b = document.getElementById(p[1]);
-      b.addEventListener('click', function () { editing[p[0]] = !editing[p[0]]; b.setAttribute('aria-pressed', editing[p[0]]); b.textContent = editing[p[0]] ? 'Done' : (p[0] === 'fleet' ? 'Edit fleet' : 'Edit crew'); render(p[0]); });
+    var EDIT_LABEL = { fleet: 'Edit fleet', crew: 'Edit crew', catalog: 'Edit catalog' }, EDIT_BTN = { fleet: 'fl-edit', crew: 'cr-edit', catalog: 'cat-edit' };
+    Object.keys(EDIT_BTN).forEach(function (k) {
+      var b = document.getElementById(EDIT_BTN[k]);
+      b.addEventListener('click', function () { editing[k] = !editing[k]; b.setAttribute('aria-pressed', editing[k]); b.textContent = editing[k] ? 'Done' : EDIT_LABEL[k]; render(k); });
     });
 
     (function () {
@@ -1366,10 +1441,11 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     })();
     function setAdmin(on) {
       isOwner = on;
-      document.getElementById('fl-edit').hidden = !on; document.getElementById('cr-edit').hidden = !on;
+      Object.keys(EDIT_BTN).forEach(function (k) { document.getElementById(EDIT_BTN[k]).hidden = !on; });
       document.getElementById('admin-link').textContent = on ? 'Sign out' : 'Admin';
-      if (!on) { editing.fleet = editing.crew = false; ['fl-edit', 'cr-edit'].forEach(function (id) { var b = document.getElementById(id); b.setAttribute('aria-pressed', 'false'); b.textContent = id === 'fl-edit' ? 'Edit fleet' : 'Edit crew'; }); }
-      render('fleet'); render('crew');
+      if (!on) Object.keys(EDIT_BTN).forEach(function (k) { editing[k] = false; var b = document.getElementById(EDIT_BTN[k]); b.setAttribute('aria-pressed', 'false'); b.textContent = EDIT_LABEL[k]; });
+      render('fleet'); render('crew'); render('catalog');
+      if (window.__mccnsRequests) window.__mccnsRequests(on);
     }
     /* admin sign in */
     var lm = document.getElementById('login-modal'), lf = document.getElementById('login-form'), lerr = document.getElementById('login-err');
@@ -1393,9 +1469,9 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     (async function start() {
       render('fleet'); render('crew');
       if (!CFG.supabaseUrl || !CFG.supabaseAnonKey || !window.supabase) return;
-      sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
+      sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey); window.__mccnsSb = sb;
       var loadErr = null;
-      try { await Promise.all([load('fleet'), load('crew')]); } catch (e) { loadErr = e; /* database asleep or unreachable: keep the coming soon notes */ }
+      await Promise.all(['fleet', 'crew', 'catalog'].map(function (k) { return load(k).catch(function (e) { if (!loadErr) loadErr = e; }); })); /* database asleep or a table missing: keep the built-in notes */
       window.__mccnsLoadError = loadErr;
       var s = await sb.auth.getSession(); if (s && s.data && s.data.session) setAdmin(true);
       if (loadErr && isOwner) toast('Database problem: ' + (loadErr.message || 'not reachable'));
@@ -1403,20 +1479,63 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     })();
   })();
 
-  /* Quotation request: prepares an email */
+  /* Quotation requests: saved to the database (email as a fallback); the admin sees the list */
   (function () {
     var f = document.getElementById('qform'); if (!f) return;
-    f.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var v = function (id) { return document.getElementById(id).value.trim(); }, err = document.getElementById('q-err');
-      var name = v('q-name'), email = v('q-email');
-      if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Add your name and a valid email address.'; err.hidden = false; return; }
-      err.hidden = true;
-      var items = Array.prototype.map.call(f.querySelectorAll('.qticks input:checked'), function (x) { return x.value; });
-      var lines = ['Name: ' + name, 'Yacht: ' + (v('q-yacht') || ''), 'Email: ' + email, 'Phone: ' + (v('q-phone') || ''), 'Crew size: ' + (v('q-crew') || ''), 'Needed by: ' + (v('q-date') || ''), 'Items: ' + (items.join(', ') || ''), '', v('q-msg')];
-      var subject = 'Quotation request' + (v('q-yacht') ? ': ' + v('q-yacht') : '');
-      window.location.href = 'mailto:info@br1yacht.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines.join('\n'));
+    var err = document.getElementById('q-err'), send = document.getElementById('q-send');
+    function v(id) { return document.getElementById(id).value.trim(); }
+    function mailto(r) {
+      var lines = ['Name: ' + r.name, 'Yacht: ' + (r.yacht || ''), 'Email: ' + r.email, 'Phone: ' + (r.phone || ''), 'Crew size: ' + (r.crew_size || ''), 'Needed by: ' + (r.needed_by || ''), 'Items: ' + r.items.join(', '), '', r.details || ''];
+      return 'mailto:info@br1yacht.com?subject=' + encodeURIComponent('Quotation request' + (r.yacht ? ': ' + r.yacht : '')) + '&body=' + encodeURIComponent(lines.join('\n'));
+    }
+    f.addEventListener('submit', async function (e) {
+      e.preventDefault(); err.hidden = true;
+      if (v('q-company')) return; /* filled only by spam robots */
+      var r = { name: v('q-name').slice(0, 120), yacht: v('q-yacht').slice(0, 120) || null, email: v('q-email').slice(0, 200), phone: v('q-phone').slice(0, 60) || null,
+        crew_size: v('q-crew').slice(0, 20) || null, needed_by: v('q-date').slice(0, 60) || null,
+        items: Array.prototype.map.call(f.querySelectorAll('.qticks input:checked'), function (x) { return x.value; }), details: v('q-msg').slice(0, 3000) || null };
+      if (!r.name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(r.email)) { err.textContent = 'Add your name and a valid email address.'; err.hidden = false; return; }
+      var sb = window.__mccnsSb;
+      if (!sb) { window.location.href = mailto(r); return; }
+      send.disabled = true;
+      var res = await sb.from('quote_requests').insert(r);
+      send.disabled = false;
+      if (res.error) {
+        err.innerHTML = ''; err.appendChild(document.createTextNode('We could not send your request just now. '));
+        var a = document.createElement('a'); a.href = mailto(r); a.textContent = 'Send it by email instead'; err.appendChild(a); err.hidden = false; return;
+      }
+      f.reset(); f.hidden = true; document.getElementById('q-done').hidden = false;
+      if (window.__mccnsReloadRequests) window.__mccnsReloadRequests();
     });
+
+    /* admin: list of requests */
+    var box = document.getElementById('q-reqs'), list = document.getElementById('q-list'), count = document.getElementById('q-count');
+    function fmt(d) { try { return new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return d; } }
+    function row(label, value, href) { if (!value) return null; var p = document.createElement('div'), b = document.createElement('b'); b.textContent = label; p.appendChild(b); var s = document.createElement(href ? 'a' : 'span'); s.textContent = value; if (href) s.href = href; p.appendChild(s); return p; }
+    async function loadReqs() {
+      var sb = window.__mccnsSb; if (!sb) return;
+      var res = await sb.from('quote_requests').select('*').order('created_at', { ascending: false });
+      list.textContent = '';
+      if (res.error) { count.textContent = 'Could not load requests (' + res.error.message + ')'; return; }
+      var open = res.data.filter(function (x) { return x.status !== 'answered'; }).length;
+      count.textContent = res.data.length ? res.data.length + ' in total, ' + open + ' to answer' : 'No requests yet';
+      res.data.forEach(function (q) {
+        var li = document.createElement('li'); li.className = 'qreq' + (q.status === 'answered' ? ' done' : '');
+        var head = document.createElement('div'); head.className = 'qreq-head';
+        var nm = document.createElement('b'); nm.textContent = q.name + (q.yacht ? ' · ' + q.yacht : ''); head.appendChild(nm);
+        var dt = document.createElement('span'); dt.textContent = fmt(q.created_at); head.appendChild(dt); li.appendChild(head);
+        [row('Email', q.email, 'mailto:' + q.email), row('Phone', q.phone, q.phone ? 'tel:' + q.phone.replace(/\s+/g, '') : null), row('Crew size', q.crew_size), row('Needed by', q.needed_by), row('Items', (q.items || []).join(', ')), row('Details', q.details)].forEach(function (x) { if (x) li.appendChild(x); });
+        var act = document.createElement('div'); act.className = 'qreq-act';
+        var mark = document.createElement('button'); mark.type = 'button'; mark.className = 'admin-btn'; mark.textContent = q.status === 'answered' ? 'Mark as to answer' : 'Mark as answered';
+        mark.addEventListener('click', async function () { var r = await window.__mccnsSb.from('quote_requests').update({ status: q.status === 'answered' ? 'new' : 'answered' }).eq('id', q.id); if (!r.error) loadReqs(); });
+        var del = document.createElement('button'); del.type = 'button'; del.className = 'adm-del'; del.textContent = 'Delete';
+        del.addEventListener('click', async function () { if (!del.classList.contains('armed')) { del.classList.add('armed'); del.textContent = 'Click again to delete'; return; } var r = await window.__mccnsSb.from('quote_requests').delete().eq('id', q.id); if (!r.error) loadReqs(); });
+        act.appendChild(mark); act.appendChild(del); li.appendChild(act);
+        list.appendChild(li);
+      });
+    }
+    window.__mccnsReloadRequests = function () { if (!box.hidden) loadReqs(); };
+    window.__mccnsRequests = function (on) { box.hidden = !on; if (on) loadReqs(); else list.textContent = ''; };
   })();
 
   show(location.hash.slice(1), false);
