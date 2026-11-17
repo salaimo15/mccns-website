@@ -3,7 +3,8 @@
 Static website for MCCNS Ltd, hosted on Vercel, with the fleet and crew stored in Supabase.
 
 ## Files
-- `index.html`: the whole site (pages switch with the top menu).
+- `index.html`: the "Under construction" holding page shown at mccnsltd.com.
+- `preview.html`: the whole site (pages switch with the top menu), hidden from search engines. Open it at https://mccnsltd.com/preview to view and edit. To launch, rename `preview.html` back to `index.html` and remove its robots noindex line.
 - `img/`: photos and logos.
 - `config.js`: the Supabase Project URL and anon public key (both public by design; never put the service_role key here).
 - `supabase/setup.sql`: creates the fleet and crew tables, the photo storage and the access rules. Run it once in Supabase's SQL Editor.
