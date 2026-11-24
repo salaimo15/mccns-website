@@ -136,9 +136,6 @@ drop policy if exists "orders admin" on public.tshirt_orders;
 create policy "orders send" on public.tshirt_orders for insert to anon, authenticated with check (status = 'new');
 create policy "orders admin" on public.tshirt_orders for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
--- Fabric for the Ocean as Home T-shirt (also fixes it if this file was already run).
-update public.catalog set fabric = 'Organic cotton' where ref = 'BR1-01' and fabric is null;
-
 notify pgrst, 'reload schema';
 
 
