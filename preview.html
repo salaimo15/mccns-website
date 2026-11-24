@@ -610,6 +610,11 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
 .cat.has-photo { padding-top: 0 }
 .cat-photo { margin: 0 -24px 8px; aspect-ratio: 4 / 3; overflow: hidden; background: var(--bg-3) }
 .cat-photo img { width: 100%; height: 100%; object-fit: cover; display: block }
+.cat-group { grid-column: 1 / -1; margin: 28px 0 0; padding-bottom: 10px; border-bottom: 1px solid var(--line); font: 500 1.35rem/1 Antonio, "Arial Narrow", sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--ink) }
+.cat-group:first-child { margin-top: 0 }
+.cat-ref { font: 500 11px/1 var(--sans); font-style: normal; letter-spacing: .16em; color: var(--accent) }
+.cat span { font-size: .95rem }
+.cat-fab { font: 400 12px/1.4 var(--sans); color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 4px }
 .cat { position: relative }
 .cat .tools { position: absolute; top: 10px; right: 10px; z-index: 2 }
 .cats .add-card { min-height: 160px }
@@ -903,7 +908,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
         <li class="cat"><svg class="cat-ic" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M10 40 Q10 14 32 14 Q54 14 54 40 Z"/><path d="M10 40 Q32 34 60 46 Q46 52 10 46"/><circle cx="32" cy="12" r="2" fill="currentColor"/></svg><b>Caps and accessories</b><span>Caps, belts and small items in the yacht's colours.</span></li>
         <li class="cat"><svg class="cat-ic" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 22 L52 22 L54 58 L10 58 Z"/><path d="M23 28 L23 16 Q23 7 32 7 Q41 7 41 16 L41 28"/></svg><b>Bags</b><span>Crew bags and kit bags, branded for the yacht.</span></li>
       </ul>
-      <p class="br-note" id="cat-note">Full catalog with photos and sizes coming soon.</p>
+      <p class="br-note" id="cat-note">Prices on request. Sizes and colours are confirmed with your quotation.</p>
     </div>
   </div>
 
@@ -1070,8 +1075,8 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
     <div class="adm-group" id="adm-catalog" hidden>
       <span class="adm-gl">Category</span>
       <select id="adm-cat-category" class="adm-select">
-        <option value="polo">Polo shirts</option><option value="shirt">Shirts</option><option value="shorts">Shorts and trousers</option>
-        <option value="jacket">Outerwear</option><option value="cap">Caps and accessories</option><option value="bag">Bags</option><option value="other">Other</option>
+        <option value="tshirt">T-shirts &amp; polos</option><option value="sweat">Sweatshirts &amp; hoodies</option><option value="jacket">Jackets &amp; gilets</option>
+        <option value="bottoms">Shorts, trousers &amp; belts</option><option value="headwear">Headwear</option><option value="bag">Bags</option><option value="drink">Drinkware</option><option value="other">Other</option>
       </select>
     </div>
     <label class="adm-check" id="adm-example-wrap"><input type="checkbox" id="adm-example"> Mark as example</label>
@@ -1295,7 +1300,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       crew: { coll: 'crew', title: 'crew member', max: 480,
         fields: [['name', 'Name', 1], ['role', 'Role'], ['yacht', 'Yacht', 1]] },
       catalog: { coll: 'catalog', title: 'product', max: 1100,
-        fields: [['name', 'Product name', 1], ['description', 'Description', 1]] }
+        fields: [['ref', 'Reference'], ['name', 'Product name'], ['description', 'Description', 1], ['fabric', 'Fabric and weight', 1]] }
     };
     var CAT_ICONS = {
       polo: '<path d="M22 8 L14 11 L4 20 L10 30 L16 26 L16 58 L48 58 L48 26 L54 30 L60 20 L50 11 L42 8 Q40 14 32 14 Q24 14 22 8 Z"/><path d="M27 9 L32 19 L37 9"/>',
@@ -1305,10 +1310,13 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       cap: '<path d="M10 40 Q10 14 32 14 Q54 14 54 40 Z"/><path d="M10 40 Q32 34 60 46 Q46 52 10 46"/>',
       bag: '<path d="M12 22 L52 22 L54 58 L10 58 Z"/><path d="M23 28 L23 16 Q23 7 32 7 Q41 7 41 16 L41 28"/>',
       other: '<path d="M34 8 L56 8 L56 30 L30 56 L8 34 Z"/><circle cx="46" cy="18" r="3"/>' };
+    CAT_ICONS.tshirt = CAT_ICONS.polo; CAT_ICONS.sweat = CAT_ICONS.shirt; CAT_ICONS.bottoms = CAT_ICONS.shorts; CAT_ICONS.headwear = CAT_ICONS.cap; CAT_ICONS.drink = '<path d="M20 10 L44 10 L40 58 L24 58 Z"/><line x1="21" y1="20" x2="43" y2="20"/>';
+    var CAT_GROUPS = [['tshirt', 'T-shirts & polos', ['polo', 'shirt']], ['sweat', 'Sweatshirts & hoodies'], ['jacket', 'Jackets & gilets'], ['bottoms', 'Shorts, trousers & belts', ['shorts']], ['headwear', 'Headwear', ['cap']], ['bag', 'Bags'], ['drink', 'Drinkware'], ['other', 'Other']];
+    function catGroup(c) { for (var g = 0; g < CAT_GROUPS.length; g++) { if (CAT_GROUPS[g][0] === c || (CAT_GROUPS[g][2] || []).indexOf(c) >= 0) return g; } return CAT_GROUPS.length - 1; }
     var fleetView = 'current', state = { fleet: [], crew: [], catalog: [] }, editing = { fleet: false, crew: false, catalog: false }, catLoaded = false, sb = null, isOwner = false;
     var CFG = window.MCCNS_CONFIG || {}, PUBLIC_PREFIX = (CFG.supabaseUrl || '').replace(/\/$/, '') + '/storage/v1/object/public/';
     /* database adapter: rows <-> page objects */
-    var COLS = { fleet: ['name', 'type', 'length', 'built', 'port', 'link', 'status', 'mgmt', 'photo', 'photo_pos', 'example'], crew: ['name', 'role', 'yacht', 'photo', 'example'], catalog: ['name', 'category', 'description', 'photo', 'photo_pos'] };
+    var COLS = { fleet: ['name', 'type', 'length', 'built', 'port', 'link', 'status', 'mgmt', 'photo', 'photo_pos', 'example'], crew: ['name', 'role', 'yacht', 'photo', 'example'], catalog: ['ref', 'name', 'category', 'description', 'fabric', 'photo', 'photo_pos'] };
     function fromRow(kind, r) { var o = { _id: r.id, order: r.ord }; COLS[kind].forEach(function (c) { o[c] = r[c]; }); if (kind === 'fleet') o.use = r.yacht_use; return o; }
     function toRow(kind, o) { var r = { ord: o.order }; COLS[kind].forEach(function (c) { if (o[c] !== undefined) r[c] = o[c]; }); if (kind === 'fleet') r.yacht_use = o.use || null; return r; }
     async function load(kind) {
@@ -1391,16 +1399,25 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       if (!catLoaded && !isOwner) return; /* keep the built-in category cards until the database answers */
       var list = state.catalog; catList.textContent = '';
       catList.parentElement.classList.toggle('editing', editing.catalog);
-      document.getElementById('cat-note').hidden = list.some(function (d) { return !!d.photo; });
+      document.getElementById('cat-note').hidden = false;
       if (!list.length && !editing.catalog) catList.appendChild(el('li', 'empty-note', 'Catalog coming soon.'));
-      list.forEach(function (d, i) {
-        var li = el('li', 'cat'), ph = safePhoto(d.photo);
-        if (ph) { var fig = el('div', 'cat-photo'), im = new Image(); im.src = ph; im.alt = d.name || 'Product'; im.style.objectPosition = safePos(d.photo_pos); fig.appendChild(im); li.appendChild(fig); li.classList.add('has-photo'); }
-        else { var ic = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); ic.setAttribute('viewBox', '0 0 64 64'); ic.setAttribute('class', 'cat-ic'); ic.setAttribute('aria-hidden', 'true'); ic.setAttribute('fill', 'none'); ic.setAttribute('stroke', 'currentColor'); ic.setAttribute('stroke-width', '2'); ic.setAttribute('stroke-linejoin', 'round'); ic.setAttribute('stroke-linecap', 'round'); ic.innerHTML = CAT_ICONS[d.category] || CAT_ICONS.other; li.appendChild(ic); }
-        li.appendChild(el('b', null, d.name || 'Product'));
-        if (d.description) li.appendChild(el('span', null, d.description));
-        if (isOwner) li.appendChild(tools('catalog', i, list.length));
-        catList.appendChild(li);
+      var groups = CAT_GROUPS.map(function () { return []; });
+      list.forEach(function (d, i) { groups[catGroup(d.category)].push(i); });
+      var grouped = list.some(function (d) { return !!d.ref; });
+      groups.forEach(function (idx, g) {
+        if (!idx.length) return;
+        if (grouped) catList.appendChild(el('li', 'cat-group', CAT_GROUPS[g][1]));
+        idx.forEach(function (i) {
+          var d = list[i], li = el('li', 'cat'), ph = safePhoto(d.photo);
+          if (ph) { var fig = el('div', 'cat-photo'), im = new Image(); im.src = ph; im.alt = d.name || 'Product'; im.loading = 'lazy'; im.style.objectPosition = safePos(d.photo_pos); fig.appendChild(im); li.appendChild(fig); li.classList.add('has-photo'); }
+          else { var ic = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); ic.setAttribute('viewBox', '0 0 64 64'); ic.setAttribute('class', 'cat-ic'); ic.setAttribute('aria-hidden', 'true'); ic.setAttribute('fill', 'none'); ic.setAttribute('stroke', 'currentColor'); ic.setAttribute('stroke-width', '2'); ic.setAttribute('stroke-linejoin', 'round'); ic.setAttribute('stroke-linecap', 'round'); ic.innerHTML = CAT_ICONS[d.category] || CAT_ICONS.other; li.appendChild(ic); }
+          if (d.ref) li.appendChild(el('em', 'cat-ref', d.ref));
+          li.appendChild(el('b', null, d.name || 'Product'));
+          if (d.description) li.appendChild(el('span', null, d.description));
+          if (d.fabric) li.appendChild(el('small', 'cat-fab', d.fabric));
+          if (isOwner) li.appendChild(tools('catalog', i, list.length));
+          catList.appendChild(li);
+        });
       });
       if (isOwner) { var add = el('button', 'add-card', '+ Add product'); add.type = 'button'; add.addEventListener('click', function () { openEditor('catalog', -1); }); catList.appendChild(add); }
     }
@@ -1453,7 +1470,7 @@ a.cval { text-decoration: none } a.cval:hover { color: var(--red) }
       cur = { kind: kind, id: i >= 0 ? d._id : null, order: d.order };
       document.getElementById('adm-title').textContent = (i >= 0 ? 'Edit ' : 'Add ') + K.title;
       var box = document.getElementById('adm-fields'); box.textContent = '';
-      K.fields.forEach(function (f) { var lab = el('label', f[2] ? 'wide' : null, f[1]), inp = el('input'); inp.id = 'adm-f-' + kind + '-' + f[0]; inp.value = d[f[0]] || ''; inp.maxLength = f[0] === 'link' ? 500 : f[0] === 'description' ? 200 : 80; if (f[0] === 'link') { inp.type = 'url'; inp.placeholder = 'https://'; } lab.appendChild(inp); box.appendChild(lab); });
+      K.fields.forEach(function (f) { var lab = el('label', f[2] ? 'wide' : null, f[1]), inp = el('input'); inp.id = 'adm-f-' + kind + '-' + f[0]; inp.value = d[f[0]] || ''; inp.maxLength = f[0] === 'link' ? 500 : f[0] === 'description' ? 600 : f[0] === 'fabric' ? 160 : f[0] === 'ref' ? 20 : 80; if (f[0] === 'link') { inp.type = 'url'; inp.placeholder = 'https://'; } lab.appendChild(inp); box.appendChild(lab); });
       photo = safePhoto(d.photo); photoPos = safePos(d.photo_pos); showPrev();
       document.getElementById('adm-example').checked = !!d.example;
       var isF = kind === 'fleet', isC = kind === 'catalog'; document.getElementById('adm-fleet').hidden = !isF; document.getElementById('adm-example-wrap').hidden = isF || isC;
