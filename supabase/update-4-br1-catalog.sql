@@ -14,7 +14,7 @@ delete from public.catalog where photo is null and ref is null and name in ('Pol
 -- The products. A product whose reference already exists is skipped, so running this twice is safe.
 insert into public.catalog (ref, name, category, description, fabric, photo, ord)
 select v.ref, v.name, v.category, v.description, v.fabric, v.photo, v.ord from (values
-  ('BR1-01', 'Ocean as Home T-shirt', 'tshirt', 'White T-shirt with the claim "Wind as fuel. Ocean as home." printed in red on the back, finished with a patch cut from an upcycled sail.', null, 'img/cat-br1-01.webp', 1),
+  ('BR1-01', 'Ocean as Home T-shirt', 'tshirt', 'White T-shirt with the claim "Wind as fuel. Ocean as home." printed in red on the back, finished with a patch cut from an upcycled sail.', 'Organic cotton', 'img/cat-br1-01.webp', 1),
   ('BR1-02', 'Sport T-shirt', 'tshirt', 'Short sleeve raglan T-shirt with flatlock seams, breathable fabric and a sweat-absorbing neck tape. Side-seamed for a better fit.', '100% microperforated polyester · 140 g/m²', 'img/cat-br1-02.webp', 2),
   ('BR1-03', 'Contrast Panel T-shirt', 'tshirt', 'Short sleeve T-shirt with contrast panels and twin-needle stitching. Very hard-wearing, light and breathable.', '100% polyester · 140 g/m²', 'img/cat-br1-03.webp', 3),
   ('BR1-04', 'Technical Polo', 'tshirt', 'Technical short sleeve polo with three matching buttons and raglan sleeves. Double side seams for a better fit, longer drop hem at the back, reflective details on the sleeves and back of the collar, contrast neck tape.', '140 g/m²', 'img/cat-br1-04.webp', 4),
@@ -45,5 +45,8 @@ select v.ref, v.name, v.category, v.description, v.fabric, v.photo, v.ord from (
   ('BR1-29', 'Carabiner Mug', 'drink', 'Double-wall stainless steel mug with carabiner handle. 300 ml.', 'Stainless steel', 'img/cat-br1-29.webp', 29)
 ) as v(ref, name, category, description, fabric, photo, ord)
 where not exists (select 1 from public.catalog c where c.ref = v.ref);
+
+-- Fabric for the Ocean as Home T-shirt (also fixes it if this file was already run).
+update public.catalog set fabric = 'Organic cotton' where ref = 'BR1-01' and fabric is null;
 
 notify pgrst, 'reload schema';
